@@ -6,7 +6,7 @@ Its goal is to fully support the **Minecraft Classic Server Protocol**.
 ## Inspirations
 - **Thirty** by Sean Baggaley ([Firestick Games on GitLab](http://dev.firestick.games/sean/thirty))
 - **terse.py** by jshtab ([Gist](https://gist.github.com/jshtab/0d112f45b7e4a9aeda619c3368ea72d6))
-- **fCraft** by mstefarov [Github](https://github.com/mstefarov/fCraft)
+- **fCraft** by mstefarov ([Github](https://github.com/mstefarov/fCraft))
 
 ## Concept
 ccraft will be written in C++ and aims to support all features of the Minecraft Classic Server Protocol.
