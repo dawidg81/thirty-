@@ -40,4 +40,3 @@ typedef int socket_t;
 static inline int socket_error(void) { return errno; }
 
 #endif
-
