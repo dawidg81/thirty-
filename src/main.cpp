@@ -3,10 +3,10 @@
 #include <unistd.h>
 #include <inttypes.h>
 #include <getopt.h>
-#include "server.h"
-#include "sockets.h"
-#include "blocks.h"
-#include "commands.h"
-#include "util.h"
-#include "config.h"
-#include "log.h"
+#include "server.hpp"
+#include "sockets.hpp"
+#include "blocks.hpp"
+#include "commands.hpp"
+#include "util.hpp"
+#include "config.hpp"
+#include "log.hpp"
