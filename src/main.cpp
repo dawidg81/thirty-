@@ -13,11 +13,13 @@ int main(){
     if(::bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) != 0) cout << "fatal error: failed to bind\n";
     if(listen(serverSocket, 5) != 0) cout << "fatal error: failed to listen\n";
 
-    int clientSocket = accept(serverSocket, nullptr, nullptr);
+    while(true){
+        int clientSocket = accept(serverSocket, nullptr, nullptr);
 
-    uint8_t playerId[131] = {};
-    recv(clientSocket, playerId, sizeof(playerId), 0);
-    cout << playerId << endl;
+        uint8_t playerId[131] = {};
+        recv(clientSocket, playerId, sizeof(playerId), 0);
+        cout << playerId << endl;
+    }
 
     return 0;
 }
