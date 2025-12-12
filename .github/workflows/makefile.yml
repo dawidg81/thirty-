@@ -1,0 +1,92 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history for commit counting
+
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential g++ libcurl4-openssl-dev
+
+    - name: Show version info
+      run: make version
+
+    - name: Build all targets
+      run: make all
+
+    - name: Display build info
+      run: make info
+
+    - name: Run tests (if available)
+      run: |
+        if make -n check >/dev/null 2>&1; then
+          make check
+        else
+          echo "No tests defined, skipping..."
+        fi
+
+    - name: Upload x86_64 binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: ccraft-x86_64-linux
+        path: bin/ccraft-x86_64-linux
+        if-no-files-found: error
+
+    - name: Upload aarch64 binary (if exists)
+      uses: actions/upload-artifact@v4
+      with:
+        name: ccraft-aarch64-android
+        path: bin/ccraft-aarch64-android
+        if-no-files-found: ignore
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download x86_64 binary
+      uses: actions/download-artifact@v4
+      with:
+        name: ccraft-x86_64-linux
+        path: artifacts/
+
+    - name: Download aarch64 binary
+      uses: actions/download-artifact@v4
+      with:
+        name: ccraft-aarch64-android
+        path: artifacts/
+      continue-on-error: true
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: artifacts/*
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
