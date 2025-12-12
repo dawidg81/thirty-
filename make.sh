@@ -1,1 +1,0 @@
-g++ src/*.cpp -o bin/ccraft
