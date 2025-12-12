@@ -24,8 +24,18 @@ int main(){
         int clientSocket = accept(serverSocket, nullptr, nullptr);
 
         uint8_t playerId[131];
-        recv(clientSocket, playerId, sizeof(playerId), 0);
-        cout << "Incoming connection. Its indetification: '" << playerId << "'" << endl;
+        ssize_t bytesReceived = recv(clientSocket, playerId, sizeof(playerId) - 1, 0);
+
+        if(bytesReceived > 0){
+            cout << "Incoming connection. Received " << bytesReceived << " bytes." << endl;
+            cout << "HEX: ";
+            for(ssize_t i = 0; i < bytesReceived; i++){
+                printf("%02x ", playerId[i]);
+            }
+            cout << endl;
+            playerId[bytesReceived] = '\0';
+            cout << "ASCII: '" << (char*)playerId << "'" << endl;
+        }
     }
 
     return 0;
