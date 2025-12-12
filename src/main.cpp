@@ -75,8 +75,8 @@ int main(){
             cout << "ASCII: '" << (char*)playerIdBuf << "'" << endl;
         }
 
-        if(bytesReceived < 131){
-            cout << "Player id receiving: Buffer error: expected 131 bytes but got " << bytesReceived << endl;
+        if(bytesReceived < 130){
+            cout << "Player id receiving: Buffer error: expected 130 bytes but got " << bytesReceived << endl;
             close(clientSocket);
             continue;
         }
