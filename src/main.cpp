@@ -55,7 +55,7 @@ int main(){
         return 2;
     }
 
-    sendHeartbeat("ccraft", 25565, 0, 0, "gregorywashere", true);
+    sendHeartbeat("ccraft%20is%20a%20new%20server%20software%20(work%20in%20progress)", 25565, 0, 1, "gregorywashere", true);
 
     while(true){
         // PLAYER IDENTIFICATION
