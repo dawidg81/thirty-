@@ -55,7 +55,7 @@ int main(){
         return 2;
     }
 
-    sendHeartbeat("ccraft%20is%20a%20new%20server%20software%20(work%20in%20progress)", 25565, 0, 1, "gregorywashere", true);
+    sendHeartbeat("ccraft", 25565, 0, 1, "gregorywashere", true);
 
     while(true){
         // PLAYER IDENTIFICATION
@@ -140,8 +140,8 @@ int main(){
         memset(&serverIdBuf[2], 0x20, 64);
         memset(&serverIdBuf[66], 0x20, 64);
 
-        const char* name = "Hello, this is dawidg81. If you see this, it means that it WORKS";
-        const char* motd = "almost works... https://github.com/dawidg81/ccraft";
+        const char* name = "ccraft v0.0.0.55";
+        const char* motd = "https://github.com/dawidg81/ccraft";
         memcpy(&serverIdBuf[2], name, strlen(name));
         memcpy(&serverIdBuf[66], motd, strlen(motd));
 
