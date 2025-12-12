@@ -10,8 +10,15 @@ int main(){
     serverAddress.sin_port = htons(25565);
     serverAddress.sin_addr.s_addr = INADDR_ANY;
 
-    if(::bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) != 0) cout << "fatal error: failed to bind\n";
-    if(listen(serverSocket, 5) != 0) cout << "fatal error: failed to listen\n";
+    if(::bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) != 0){
+        cout << "Fatal error: failed to bind to the address. Exiting with code 1.\n";
+        return 1;
+    }
+
+    if(listen(serverSocket, 5) != 0){
+        cout << "Fatal error: failed to listen to port. Exiting with code 2.\n";
+        return 2;
+    }
 
     while(true){
         int clientSocket = accept(serverSocket, nullptr, nullptr);
