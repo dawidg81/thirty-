@@ -93,6 +93,8 @@ int main(){
         serverIdBuf[0] = serverId.packet_id;
         serverIdBuf[1] = serverId.prot_ver;
 
+        // FIX: Something fails between line 92 and line 102. To debug.
+
         memcpy(&serverIdBuf[2], serverId.name, sizeof(serverId.name));
         memcpy(&serverIdBuf[66], serverId.motd, sizeof(serverId.motd));
 
