@@ -96,8 +96,8 @@ int main(){
         memset(&serverIdBuf[2], 0x20, 64);
         memset(&serverIdBuf[66], 0x20, 64);
 
-        const char* name = "Hello there";
-        const char* motd = "If you see this it means that it works";
+        const char* name = "Hello, this is dawidg81. If you see this, it means that it WORKS";
+        const char* motd = "ehem...almost...there...https://github.com/dawidg81/ccraft";
         memcpy(&serverIdBuf[2], name, strlen(name));
         memcpy(&serverIdBuf[66], motd, strlen(motd));
 
