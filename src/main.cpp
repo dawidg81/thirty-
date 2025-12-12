@@ -1,7 +1,6 @@
 #include <iostream>
 #include <netinet/in.h>
 #include <string>
-#include "main.h"
 using namespace std;
 
 int main(){
