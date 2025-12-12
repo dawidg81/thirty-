@@ -94,15 +94,19 @@ int main(){
         if(playerId.packet_id == 0x00){
             cout << "Player identification packet id OK\n";
         } else {
-            cout << "Player identification packet id ERR: expected packet id with value 0x00 but got " << playerId.packet_id << ". Closing connection.\n";
+            cout << "Player identification packet id ERR: expected packet id with value 0x00 but got 0x" 
+                << hex << (int)playerId.packet_id << dec << ". Closing connection.\n";
             close(clientSocket);
+            continue;
         }
 
         if(playerId.prot_ver == 0x07){
             cout << "Player identification protocol version OK\n";
         } else {
-            cout << "Player identification protocol version ERR: expected protocol version 0x07 but got " << playerId.prot_ver << ". Closing connection.\n";
+            cout << "Player identification protocol version ERR: expected protocol version 0x07 but got 0x" 
+                << hex << (int)playerId.prot_ver << dec << ". Closing connection.\n";
             close(clientSocket);
+            continue;
         }
 
         // SERVER IDENTIFICATION
