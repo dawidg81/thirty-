@@ -1,6 +1,7 @@
 #include <iostream>
 #include <netinet/in.h>
 #include <string>
+#include "main.h"
 using namespace std;
 
 int main(){
@@ -57,14 +58,14 @@ int main(){
             cout << "Player identification packet id OK\n";
         } else {
             cout << "Player identification packet id ERROR: expected packet id with value 0x00 but got " << playerId.packet_id << ". Closing connection.\n";
-            close(clientSocket);
+            close(serverSocket);
         }
 
         if(playerId.prot_ver == 0x07){
             cout << "Player identification protocol version OK\n";
         } else {
             cout << "Player identification protocol version ERROR: expected protocol version 0x07 but got " << playerId.prot_ver << ". Closing connection.\n";
-            close(clientSocket);
+            close(serverSocket);
         }
     }
     return 0;
