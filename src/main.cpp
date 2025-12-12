@@ -141,10 +141,10 @@ int main(){
         memset(&serverIdBuf[2], 0x20, 64);
         memset(&serverIdBuf[66], 0x20, 64);
 
-        const char* name = "ccraft v" + VERSION;
-        const char* motd = "https://github.com/dawidg81/ccraft";
-        memcpy(&serverIdBuf[2], name, strlen(name));
-        memcpy(&serverIdBuf[66], motd, strlen(motd));
+        string name = string("ccraft v") + VERSION;
+        string motd = "https://github.com/dawidg81/ccraft";
+        memcpy(&serverIdBuf[2], name.c_str(), name.length());
+        memcpy(&serverIdBuf[66], motd.c_str(), motd.length());
 
         serverIdBuf[130] = serverId.usrtype;
         cout << "Send server id: Server id buffer written\n";
