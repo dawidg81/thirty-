@@ -86,17 +86,20 @@ int main(){
         cout << "Send server id: Created server id\n";
         serverId.packet_id = 0x00;
         serverId.prot_ver = 0x07;
-        strncpy(serverId.name, "Hello", sizeof(serverId.name) - 1);
-        strncpy(serverId.motd, "If you see this it means that it works", sizeof(serverId.motd) - 1);
         serverId.usrtype = 0x00;
-        cout << "Send server id: Written server id\n";
+
         serverIdBuf[0] = serverId.packet_id;
         serverIdBuf[1] = serverId.prot_ver;
 
-        // FIX: Something fails between line 92 and line 102. To debug.
+        // the rest is filled with 0x20 (ASCII spaces) instead of null-terminators (0x00)
+        // for stability across both Notch's original Minecraft 0.30c (which crashes on 0x00s) and ClassiCube (allows both 0x00s and 0x20s)
+        memset(&serverIdBuf[2], 0x20, 64);
+        memset(&serverIdBuf[66], 0x20, 64);
 
-        memcpy(&serverIdBuf[2], serverId.name, sizeof(serverId.name));
-        memcpy(&serverIdBuf[66], serverId.motd, sizeof(serverId.motd));
+        const char* name = "Hello";
+        const char* motd = "If you see this it means that it works";
+        memcpy(&serverIdBuf[2], name, strlen(name));
+        memcpy(&serverIdBuf[66], motd, strlen(motd));
 
         serverIdBuf[130] = serverId.usrtype;
         cout << "Send server id: Server id buffer written";
@@ -104,6 +107,8 @@ int main(){
         if(send(clientSocket, serverIdBuf, sizeof(serverIdBuf), 0) < 0){
             cout << "Send server id: Error: failed to send server identification packet. This is fatal to the connection. It will be closed.\n";
             close(clientSocket);
+        } else {
+            cout << "Send server id: Success.\n";
         }
         
         /*
