@@ -20,16 +20,25 @@ else
     PATCH := $(word 3,$(subst ., ,$(VERSION_CONTENT)))
 endif
 
-# Get commit count since last patch tag
+# Get commit count intelligently
 LAST_PATCH_TAG := v$(MAJOR).$(MINOR).$(PATCH)
-# Try to find the tag, if it doesn't exist, count all commits
-ifeq ($(shell git rev-parse $(LAST_PATCH_TAG) 2>/dev/null),)
-    # Tag doesn't exist, count all commits (unreleased development)
+
+# Check if we're at version 0.0.0 (no releases yet)
+ifeq ($(MAJOR).$(MINOR).$(PATCH),0.0.0)
+    # Development phase: count all commits
     COMMIT_COUNT := $(shell git rev-list --count HEAD 2>/dev/null || echo 0)
 else
-    # Tag exists, count commits since that tag
-    COMMIT_COUNT := $(shell git rev-list --count $(LAST_PATCH_TAG)..HEAD 2>/dev/null || echo 0)
+    # Check if the tag exists
+    TAG_EXISTS := $(shell git rev-parse --verify $(LAST_PATCH_TAG) 2>/dev/null)
+    ifeq ($(TAG_EXISTS),)
+        # Tag doesn't exist yet, count all commits since beginning
+        COMMIT_COUNT := $(shell git rev-list --count HEAD 2>/dev/null || echo 0)
+    else
+        # Tag exists, count commits since that tag
+        COMMIT_COUNT := $(shell git rev-list --count $(LAST_PATCH_TAG)..HEAD 2>/dev/null || echo 0)
+    endif
 endif
+
 VERSION := $(MAJOR).$(MINOR).$(PATCH).$(COMMIT_COUNT)
 
 # Compiler settings
