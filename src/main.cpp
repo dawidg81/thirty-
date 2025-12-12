@@ -25,7 +25,7 @@ int main(){
 
         uint8_t playerId[131] = {};
         recv(clientSocket, playerId, sizeof(playerId), 0);
-        cout << playerId << endl;
+        cout << "Incoming connection. Its indetification: '" << playerId << "'" << endl;
     }
 
     return 0;
