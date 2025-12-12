@@ -55,6 +55,8 @@ int main(){
         return 2;
     }
 
+    sendHeartbeat("ccraft", 25565, 0, 0, "gregorywashere", true);
+
     while(true){
         // PLAYER IDENTIFICATION
         int clientSocket = accept(serverSocket, nullptr, nullptr);
