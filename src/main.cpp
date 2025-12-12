@@ -102,7 +102,7 @@ int main(){
         memcpy(&serverIdBuf[66], motd, strlen(motd));
 
         serverIdBuf[130] = serverId.usrtype;
-        cout << "Send server id: Server id buffer written";
+        cout << "Send server id: Server id buffer written\n";
         
         if(send(clientSocket, serverIdBuf, sizeof(serverIdBuf), 0) < 0){
             cout << "Send server id: Error: failed to send server identification packet. This is fatal to the connection. It will be closed.\n";
@@ -110,6 +110,9 @@ int main(){
         } else {
             cout << "Send server id: Success.\n";
         }
+
+        uint8_t level_init_packet = 0x02;
+        send(clientSocket, level_init_packet, sizeof(level_init_packet), 0);
         
         /*
         for(ssize_t i = 0; i < sizeof(serverIdBuf); i++){
