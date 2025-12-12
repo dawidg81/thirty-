@@ -55,7 +55,7 @@ TARGETS := x86_64-linux aarch64-android
 
 # Default target
 .PHONY: all
-all: version-header $(addprefix $(BIN_DIR)/$(PROJECT)-,$(TARGETS))
+all: force-version $(addprefix $(BIN_DIR)/$(PROJECT)-,$(TARGETS))
 
 # Generate version header
 .PHONY: version-header
@@ -73,6 +73,22 @@ version-header:
 	@echo "" >> $(VERSION_HEADER)
 	@echo "#endif // VERSION_HPP" >> $(VERSION_HEADER)
 	@echo "Generated $(VERSION_HEADER) with version $(VERSION)"
+
+# Force version header regeneration before every build
+.PHONY: force-version
+force-version:
+	@mkdir -p $(SRC_DIR)
+	@CURRENT_VERSION="$(VERSION)"; \
+	if [ -f $(VERSION_HEADER) ]; then \
+		OLD_VERSION=$(grep '#define VERSION ' $(VERSION_HEADER) | cut -d'"' -f2); \
+		if [ "$OLD_VERSION" != "$CURRENT_VERSION" ]; then \
+			echo "Version changed: $OLD_VERSION -> $CURRENT_VERSION"; \
+			$(MAKE) version-header; \
+			rm -rf $(OBJ_DIR); \
+		fi; \
+	else \
+		$(MAKE) version-header; \
+	fi
 
 # Build for x86_64 Linux
 $(BIN_DIR)/$(PROJECT)-x86_64-linux: $(OBJECTS)
