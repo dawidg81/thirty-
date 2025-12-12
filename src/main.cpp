@@ -141,7 +141,7 @@ int main(){
         memset(&serverIdBuf[66], 0x20, 64);
 
         const char* name = "Hello, this is dawidg81. If you see this, it means that it WORKS";
-        const char* motd = "ehem...almost...there...https://github.com/dawidg81/ccraft";
+        const char* motd = "almost works... https://github.com/dawidg81/ccraft";
         memcpy(&serverIdBuf[2], name, strlen(name));
         memcpy(&serverIdBuf[66], motd, strlen(motd));
 
