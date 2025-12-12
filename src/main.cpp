@@ -51,9 +51,8 @@ int main(){
         playerIdPack playerId;
         playerId.packet_id = playerIdBuf[0];
         playerId.prot_ver = playerIdBuf[1];
-        memcpy(&playerId.username, &playerIdBuf[2], 64);
+
         playerId.username = string((char*)&playerIdBuf[2], 64);
-        memcpy(&playerId.ver_key, &playerIdBuf[66], 64);
         playerId.ver_key = string((char*)&playerIdBuf[66], 64);
         playerId.unused = playerIdBuf[130];
 
