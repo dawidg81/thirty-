@@ -4,6 +4,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <curl/curl.h>
+#include "version.hpp"
 using namespace std;
 
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
@@ -140,7 +141,7 @@ int main(){
         memset(&serverIdBuf[2], 0x20, 64);
         memset(&serverIdBuf[66], 0x20, 64);
 
-        const char* name = "ccraft v0.0.0.55";
+        const char* name = "ccraft v" + VERSION;
         const char* motd = "https://github.com/dawidg81/ccraft";
         memcpy(&serverIdBuf[2], name, strlen(name));
         memcpy(&serverIdBuf[66], motd, strlen(motd));
