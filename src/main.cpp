@@ -160,6 +160,10 @@ int main(){
 
         uint8_t level_init_packet = 0x02;
         send(clientSocket, &level_init_packet, sizeof(level_init_packet), 0);
+
+        struct levelDataPack{
+            // TODO
+        };
         
         /*
         for(ssize_t i = 0; i < sizeof(serverIdBuf); i++){
