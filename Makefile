@@ -28,7 +28,7 @@ VERSION := $(MAJOR).$(MINOR).$(PATCH).$(COMMIT_COUNT)
 # Compiler settings
 CXX := g++
 CXXFLAGS := -std=c++17 -Wall -Wextra -O2 -DVERSION=\"$(VERSION)\"
-LDFLAGS := 
+LDFLAGS := -lcurl
 
 # Source files
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
