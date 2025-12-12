@@ -61,19 +61,19 @@ int main(){
             cout << "Player identification packet id OK\n";
         } else {
             cout << "Player identification packet id ERR: expected packet id with value 0x00 but got " << playerId.packet_id << ". Closing connection.\n";
-            close(serverSocket);
+            close(clientSocket);
         }
 
         if(playerId.prot_ver == 0x07){
             cout << "Player identification protocol version OK\n";
         } else {
             cout << "Player identification protocol version ERR: expected protocol version 0x07 but got " << playerId.prot_ver << ". Closing connection.\n";
-            close(serverSocket);
+            close(clientSocket);
         }
 
         // SERVER IDENTIFICATION
         uint8_t serverIdBuf[131];
-cout << "Created server id buffer\n";
+        cout << "Send server id: Created server id buffer\n";
         struct serverIdPack{
             uint8_t packet_id;
             uint8_t prot_ver;
@@ -81,21 +81,29 @@ cout << "Created server id buffer\n";
             char motd[64];
             uint8_t usrtype;
         };
-cout << "Created server id struct\n";
+        cout << "Send server id: Created server id structure\n";
         serverIdPack serverId;
-cout << "Created server id\n";
+        cout << "Send server id: Created server id\n";
         serverId.packet_id = 0x00;
         serverId.prot_ver = 0x07;
         strncpy(serverId.name, "Hello", sizeof(serverId.name) - 1);
         strncpy(serverId.motd, "If you see this it means that it works", sizeof(serverId.motd) - 1);
         serverId.usrtype = 0x00;
-cout << "Written server id\n";
+        cout << "Send server id: Written server id\n";
         serverIdBuf[0] = serverId.packet_id;
         serverIdBuf[1] = serverId.prot_ver;
-        memcpy(&serverIdBuf[2], &serverId.name, sizeof(serverId.name));
-        memcpy(&serverIdBuf[66], &serverId.name, sizeof(serverId.name));
+
+        memcpy(&serverIdBuf[2], serverId.name, sizeof(serverId.name));
+        memcpy(&serverIdBuf[66], serverId.motd, sizeof(serverId.motd));
+
         serverIdBuf[130] = serverId.usrtype;
-cout << "Server id written";
+        cout << "Send server id: Server id buffer written";
+        
+        if(send(clientSocket, serverIdBuf, sizeof(serverIdBuf), 0) < 0){
+            cout << "Send server id: Error: failed to send server identification packet. This is fatal to the connection. It will be closed.\n";
+            close(clientSocket);
+        }
+        
         /*
         for(ssize_t i = 0; i < sizeof(serverIdBuf); i++){
             printf("%02x ", serverIdBuf[i]);
