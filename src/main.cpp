@@ -23,7 +23,7 @@ int main(){
     while(true){
         int clientSocket = accept(serverSocket, nullptr, nullptr);
 
-        uint8_t playerId[131] = {};
+        uint8_t playerId[131];
         recv(clientSocket, playerId, sizeof(playerId), 0);
         cout << "Incoming connection. Its indetification: '" << playerId << "'" << endl;
     }
