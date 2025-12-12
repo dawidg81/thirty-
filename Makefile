@@ -11,7 +11,7 @@ VERSION_HEADER := $(SRC_DIR)/version.hpp
 # Read or initialize version
 ifeq ($(wildcard $(VERSION_FILE)),)
     MAJOR := 0
-    MINOR := 1
+    MINOR := 0
     PATCH := 0
 else
     VERSION_CONTENT := $(shell cat $(VERSION_FILE))
@@ -22,13 +22,20 @@ endif
 
 # Get commit count since last patch tag
 LAST_PATCH_TAG := v$(MAJOR).$(MINOR).$(PATCH)
-COMMIT_COUNT := $(shell git rev-list --count $(LAST_PATCH_TAG)..HEAD 2>/dev/null || echo 0)
+# Try to find the tag, if it doesn't exist, count all commits
+ifeq ($(shell git rev-parse $(LAST_PATCH_TAG) 2>/dev/null),)
+    # Tag doesn't exist, count all commits (unreleased development)
+    COMMIT_COUNT := $(shell git rev-list --count HEAD 2>/dev/null || echo 0)
+else
+    # Tag exists, count commits since that tag
+    COMMIT_COUNT := $(shell git rev-list --count $(LAST_PATCH_TAG)..HEAD 2>/dev/null || echo 0)
+endif
 VERSION := $(MAJOR).$(MINOR).$(PATCH).$(COMMIT_COUNT)
 
 # Compiler settings
 CXX := g++
 CXXFLAGS := -std=c++17 -Wall -Wextra -O2 -DVERSION=\"$(VERSION)\"
-LDFLAGS := -lcurl
+LDFLAGS := 
 
 # Source files
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
