@@ -92,7 +92,7 @@ int main(){
         serverIdBuf[1] = serverId.prot_ver;
 
         // the rest is filled with 0x20 (ASCII spaces) instead of null-terminators (0x00)
-        // for stability across both Notch's original Minecraft 0.30c (which crashes on 0x00s) and ClassiCube (allows both 0x00s and 0x20s)
+        // for stability across both Notch's original Minecraft 0.30c (which crashes on 0x00s, accepts only 0x20s) and ClassiCube (allows both 0x00s and 0x20s)
         memset(&serverIdBuf[2], 0x20, 64);
         memset(&serverIdBuf[66], 0x20, 64);
 
@@ -112,7 +112,7 @@ int main(){
         }
 
         uint8_t level_init_packet = 0x02;
-        send(clientSocket, level_init_packet, sizeof(level_init_packet), 0);
+        send(clientSocket, &level_init_packet, sizeof(level_init_packet), 0);
         
         /*
         for(ssize_t i = 0; i < sizeof(serverIdBuf); i++){
