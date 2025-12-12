@@ -44,7 +44,7 @@ int main(){
             string username;
             string ver_key;
             uint8_t unused;
-        }
+        };
 
         playerIdPack playerId;
         playerId.packet_id = playerIdBuf[0];
