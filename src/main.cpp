@@ -39,6 +39,8 @@ bool sendHeartbeat(const string& name, int port, int users, int max, const strin
 }
 
 int main(){
+    cout << "ccraft v" << VERSION << " by dawidg81";
+
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 
     sockaddr_in serverAddress;
