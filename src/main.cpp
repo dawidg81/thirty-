@@ -24,6 +24,7 @@ int main(){
     }
 
     while(true){
+        // PLAYER IDENTIFICATION
         int clientSocket = accept(serverSocket, nullptr, nullptr);
 
         uint8_t playerIdBuf[131];
@@ -69,6 +70,22 @@ int main(){
             cout << "Player identification protocol version ERROR: expected protocol version 0x07 but got " << playerId.prot_ver << ". Closing connection.\n";
             close(serverSocket);
         }
+
+        // SERVER IDENTIFICATION
+        uint8_t serverIdBuf[131];
+        
+        struct serverIdPack{
+            uint8_t packet_id;
+            uint8_t prot_ver;
+            char name[64];
+            char motd[64];
+            uint8_t usrtype;
+        };
+
+        serverIdPack serverId;
+        serverId.packet_id = 0x00;
+        serverId.prot_ver = 0x07;
+        strncpy(serverId.name, "Custom CCraft Server", sizeof(serverId.name) - 1);
     }
     return 0;
 }
