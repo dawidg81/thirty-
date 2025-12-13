@@ -77,98 +77,126 @@ int main(){
 			cout << "ASCII: '" << (char*)playerIdBuf << "'" << endl;
 		}
 
-	    if(bytesReceived < 130){
-	        cout << "Player id receiving: Buffer error: expected 130 bytes but got " << bytesReceived << endl;
-	        close(clientSocket);
-	        continue;
-	    }
+		if(bytesReceived < 130){
+			cout << "Player id receiving: Buffer error: expected 130 bytes but got " << bytesReceived << endl;
+			close(clientSocket);
+			continue;
+		}
 
-	    struct playerIdPack{
-	        uint8_t packet_id;
-	        uint8_t prot_ver;
-	        string username;
-	        string ver_key;
-	        uint8_t unused;
-	    };
+		struct playerIdPack{
+			uint8_t packet_id;
+			uint8_t prot_ver;
+			string username;
+			string ver_key;
+			uint8_t unused;
+		};
 
-	    playerIdPack playerId;
-	    playerId.packet_id = playerIdBuf[0];
-	    playerId.prot_ver = playerIdBuf[1];
+		playerIdPack playerId;
+		playerId.packet_id = playerIdBuf[0];
+		playerId.prot_ver = playerIdBuf[1];
 
-	    playerId.username = string((char*)&playerIdBuf[2], 64);
-	    playerId.ver_key = string((char*)&playerIdBuf[66], 64);
-	    playerId.unused = playerIdBuf[130];
+		playerId.username = string((char*)&playerIdBuf[2], 64);
+		playerId.ver_key = string((char*)&playerIdBuf[66], 64);
+		playerId.unused = playerIdBuf[130];
 
-	    if(playerId.packet_id == 0x00){
-	        cout << "Player identification packet id OK\n";
-	    } else {
-	        cout << "Player identification packet id ERR: expected packet id with value 0x00 but got 0x" 
-	            << hex << (int)playerId.packet_id << dec << ". Closing connection.\n";
-	        close(clientSocket);
-	        continue;
-	    }
+		if(playerId.packet_id == 0x00){
+			cout << "Player identification packet id OK\n";
+		} else {
+			cout << "Player identification packet id ERR: expected packet id with value 0x00 but got 0x" << hex << (int)playerId.packet_id << dec << ". Closing connection.\n";
+			close(clientSocket);
+			continue;
+		}
 
-	    if(playerId.prot_ver == 0x07){
-	        cout << "Player identification protocol version OK\n";
-	    } else {
-	        cout << "Player identification protocol version ERR: expected protocol version 0x07 but got 0x" 
-	            << hex << (int)playerId.prot_ver << dec << ". Closing connection.\n";
-	        close(clientSocket);
-	        continue;
-	    }
+		if(playerId.prot_ver == 0x07){
+			cout << "Player identification protocol version OK\n";
+		} else {
+			cout << "Player identification protocol version ERR: expected protocol version 0x07 but got 0x" << hex << (int)playerId.prot_ver << dec << ". Closing connection.\n";
+			close(clientSocket);
+			continue;
+		}
 
-	    // SERVER IDENTIFICATION
-	    uint8_t serverIdBuf[131];
-	    cout << "Send server id: Created server id buffer\n";
-	    struct serverIdPack{
-	        uint8_t packet_id;
-	        uint8_t prot_ver;
-	        char name[64];
-	        char motd[64];
-	        uint8_t usrtype;
-	    };
-	    cout << "Send server id: Created server id structure\n";
-	    serverIdPack serverId;
-	    cout << "Send server id: Created server id\n";
-	    serverId.packet_id = 0x00;
-	    serverId.prot_ver = 0x07;
-	    serverId.usrtype = 0x00;
+		// SERVER IDENTIFICATION
+		uint8_t serverIdBuf[131];
+		cout << "Send server id: Created server id buffer\n";
+		struct serverIdPack{
+			uint8_t packet_id;
+			uint8_t prot_ver;
+			char name[64];
+			char motd[64];
+			uint8_t usrtype;
+		};
+		cout << "Send server id: Created server id structure\n";
+		serverIdPack serverId;
+		cout << "Send server id: Created server id\n";
+		serverId.packet_id = 0x00;
+		serverId.prot_ver = 0x07;
+		serverId.usrtype = 0x00;
 
-	    serverIdBuf[0] = serverId.packet_id;
-	    serverIdBuf[1] = serverId.prot_ver;
+		serverIdBuf[0] = serverId.packet_id;
+		serverIdBuf[1] = serverId.prot_ver;
 
-	    // the rest is filled with 0x20 (ASCII spaces) instead of null-terminators (0x00)
-	    // for stability across both Notch's original Minecraft 0.30c (which crashes on 0x00s, accepts only 0x20s) and ClassiCube (allows both 0x00s and 0x20s)
-	    memset(&serverIdBuf[2], 0x20, 64);
-	    memset(&serverIdBuf[66], 0x20, 64);
+		// the rest is filled with 0x20 (ASCII spaces) instead of null-terminators (0x00)
+		// for stability across both Notch's original Minecraft 0.30c (which crashes on 0x00s, accepts only 0x20s) and ClassiCube (allows both 0x00s and 0x20s)
+		memset(&serverIdBuf[2], 0x20, 64);
+		memset(&serverIdBuf[66], 0x20, 64);
 
-	    string name = "ccraft v0.0.0";
-	    string motd = "https://github.com/dawidg81/ccraft";
-	    memcpy(&serverIdBuf[2], name.c_str(), name.length());
-	    memcpy(&serverIdBuf[66], motd.c_str(), motd.length());
+		string name = "ccraft v0.0.0";
+		string motd = "https://github.com/dawidg81/ccraft";
+		memcpy(&serverIdBuf[2], name.c_str(), name.length());
+		memcpy(&serverIdBuf[66], motd.c_str(), motd.length());
 
-	    serverIdBuf[130] = serverId.usrtype;
-	    cout << "Send server id: Server id buffer written\n";
+		serverIdBuf[130] = serverId.usrtype;
+		cout << "Send server id: Server id buffer written\n";
 	    
-	    if(send(clientSocket, serverIdBuf, sizeof(serverIdBuf), 0) < 0){
-	        cout << "Send server id: Error: failed to send server identification packet. This is fatal to the connection. It will be closed.\n";
-	        close(clientSocket);
-	    } else {
-	        cout << "Send server id: Success.\n";
-	    }
+		if(send(clientSocket, serverIdBuf, sizeof(serverIdBuf), 0) < 0){
+			cout << "Send server id: Error: failed to send server identification packet. This is fatal to the connection. It will be closed.\n";
+			close(clientSocket);
+		} else {
+			cout << "Send server id: Success.\n";
+		}
 
-	    uint8_t level_init_packet = 0x02;
-	    send(clientSocket, &level_init_packet, sizeof(level_init_packet), 0);
+		uint8_t level_init_packet = 0x02;
+		send(clientSocket, &level_init_packet, sizeof(level_init_packet), 0);
 
-	    struct levelDataPack{
-	        // TODO
-	    };
-	    
-	    /*
-	    for(ssize_t i = 0; i < sizeof(serverIdBuf); i++){
-	        printf("%02x ", serverIdBuf[i]);
-	    }
-	    */
+		uint8_t levelDataBuf[1028];
+		struct levelDataPack{
+			uint8_t packet_id;
+			short chunk_length;
+			uint8_t chunk_data[1024];
+			uint8_t percent_complete;
+		};
+
+		levelDataPack levelData;
+		levelData.packet_id = 0x03;
+		levelData.chunk_length = 1024;
+		for(int i=0;i<1024;i++){
+			levelData.chunk_data[i] = 0x00;
+		}
+		levelData.percent_complete = 0x00;
+
+		memcpy(levelDataBuf, &levelData, sizeof(levelData));
+		send(clientSocket, levelDataBuf, sizeof(levelDataBuf), 0);
+
+		uint8_t levelFinalizeBuf[7];
+
+		struct levelFinalizePack{
+			uint8_t packet_id;
+			short x, y, z;
+		};
+
+		levelFinalizePack levelFinalize;
+		levelFinalize.packet_id = 0x04;
+		levelFinalize.x = 64;
+		levelFinalize.y = 64;
+		levelFinalize.z = 64;
+
+		memcpy(levelFinalizeBuf, &levelFinalize, sizeof(levelFinalize));
+		send(clientSocket, levelFinalizeBuf, sizeof(levelFinalizeBuf), 0);
+		/*
+		 * for(ssize_t i = 0; i < sizeof(serverIdBuf); i++){
+		 * 	printf("%02x ", serverIdBuf[i]);
+		 * }
+		*/
 	}
 	return 0;
 }
