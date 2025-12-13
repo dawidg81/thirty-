@@ -168,9 +168,14 @@ int main(){
 
 		levelDataPack levelData;
 		levelData.packet_id = 0x03;
-		levelData.chunk_length = 1024;
-		for(int i=0;i<1024;i++){
-			levelData.chunk_data[i] = 0x00;
+		levelData.chunk_length = 64;
+		for(int i=0; i<256; i++){
+			int x = i % 64;
+			int z = i / 64;
+			levelData.chunk_data[i*4 + 0] = x;
+			levelData.chunk_data[i*4 + 1] = z;
+			levelData.chunk_data[i*4 + 2] = 0;       // y = 0 (ground level)
+			levelData.chunk_data[i*4 + 3] = 0x01;    // stone block
 		}
 		levelData.percent_complete = 0x00;
 
