@@ -4,7 +4,6 @@
 #include <cstring>
 #include <unistd.h>
 #include <curl/curl.h>
-#include "version.hpp"
 using namespace std;
 
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
@@ -39,7 +38,7 @@ bool sendHeartbeat(const string& name, int port, int users, int max, const strin
 }
 
 int main(){
-    cout << "ccraft v" << VERSION << " by dawidg81" << endl;
+    cout << "ccraft v0.0.0" << endl;
 
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -143,7 +142,7 @@ int main(){
         memset(&serverIdBuf[2], 0x20, 64);
         memset(&serverIdBuf[66], 0x20, 64);
 
-        string name = string("ccraft v") + VERSION;
+        string name = "ccraft v0.0.0";
         string motd = "https://github.com/dawidg81/ccraft";
         memcpy(&serverIdBuf[2], name.c_str(), name.length());
         memcpy(&serverIdBuf[66], motd.c_str(), motd.length());
