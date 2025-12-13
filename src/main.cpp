@@ -169,14 +169,30 @@ int main(){
 		levelDataPack levelData;
 		levelData.packet_id = 0x03;
 		levelData.chunk_length = 64;
-		for(int i=0; i<256; i++){
-			int x = i % 64;
-			int z = i / 64;
-			levelData.chunk_data[i*4 + 0] = x;
-			levelData.chunk_data[i*4 + 1] = z;
-			levelData.chunk_data[i*4 + 2] = 0;       // y = 0 (ground level)
-			levelData.chunk_data[i*4 + 3] = 0x01;    // stone block
+
+		int level_x = 64, level_y = 64, level_z = 64;
+		int total_blocks = level_x * level_y * level_z;
+		uint8_t* level_blocks = new uint8_t[total_blocks];
+
+		for(int y = 0; y < level_y; y++){
+			for(int z = 0; z < level_z; z++){
+				for(int x = 0; x < level_x; x++){
+					int index = (y * level_z + z) * level_x + x;
+
+					if(y == 0)
+						level_blocks[index] = 0x01; // Stone
+					else
+						level_blocks[index] = 0x00; // Air
+				}
+			}
 		}
+
+		for(int i = 0; i < 1024; i++){
+			levelData.chunk_data[i] = (i < total_blocks) ? level_blocks[i] : 0x00;
+		}
+
+		delete[] level_blocks;
+
 		levelData.percent_complete = 0x00;
 
 		memcpy(levelDataBuf, &levelData, sizeof(levelData));
