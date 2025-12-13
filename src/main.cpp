@@ -159,7 +159,7 @@ int main(){
 		send(clientSocket, &level_init_packet, sizeof(level_init_packet), 0);
 
 		uint8_t levelDataBuf[1028];
-		struct levelDataPack{
+		struct __attribute__((packed)) levelDataPack{
 			uint8_t packet_id;
 			short chunk_length;
 			uint8_t chunk_data[1024];
@@ -179,7 +179,7 @@ int main(){
 
 		uint8_t levelFinalizeBuf[7];
 
-		struct levelFinalizePack{
+		struct __attribute__((packed)) levelFinalizePack{
 			uint8_t packet_id;
 			short x, y, z;
 		};
